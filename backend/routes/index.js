@@ -1,7 +1,8 @@
-const express = require("express");
+// backend/api/index.js
+const express = require('express');
+const userRouter = require("./user");
+const router = express.Router();
 
-const rootRouter = require("./routes/index");
+router.use("/user", userRouter);
 
-const app = express();
-
-app.use("/api/v1", rootRouter);
+module.exports = router;
