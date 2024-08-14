@@ -1,6 +1,6 @@
 const {
     JWT_SECRET
-} = require("./routes/config")
+} = require("./config")
 
 const jwt = require("jsonwebtoken");
 
