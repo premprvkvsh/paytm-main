@@ -8,9 +8,9 @@ const {
 } = require("../db");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
-
-module.exports = router;
-
+const {
+    authMiddleware
+} = require("../middleware");
 
 const signupSchema = zod.object({
     username: zod.string(),
@@ -99,4 +99,57 @@ router.post("/Signin", async function (req, res) {
     })
 })
 
-module.export = router;
+// other auth routes
+// User routes
+const updateBody = zod.object({
+    password: zod.string().optional(),
+    firstName: zod.string().optional(),
+    lastName: zod.string().optional(),
+})
+
+router.put("/", authMiddleware, async (req, res) => {
+    const {
+        success
+    } = updateBody.safeParse(req.body)
+    if (!success) {
+        res.status(411).json({
+            message: "Error while updating information"
+        })
+    }
+
+    await User.updateOne({
+        _id: req.userId
+    }, req.body);
+
+    res.json({
+        message: "Updated successfully"
+    })
+})
+
+//Route to get users from the backend, filterable via firstName/lastName
+router.get("/bulk", async (req, res) => {
+    const filter = req.query.filter || "";
+
+    const users = await User.find({
+        $or: [{
+            firstName: {
+                "$regex": filter
+            }
+        }, {
+            lastName: {
+                "$regex": filter
+            }
+        }]
+    })
+
+    res.json({
+        user: users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
+    })
+})
+
+module.exports = router;
