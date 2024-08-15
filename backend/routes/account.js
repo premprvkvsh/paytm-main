@@ -12,7 +12,6 @@ const {
 
 const router = express.Router();
 
-
 router.get("/balance", authMiddleware, async (req, res) => {
     const account = await Account.findOne({
         userId: req.userId
@@ -22,7 +21,6 @@ router.get("/balance", authMiddleware, async (req, res) => {
         balance: account.balance
     })
 });
-
 
 //an endpoint for user to transfer money to another account
 
@@ -131,8 +129,6 @@ router.post("/transfer", authMiddleware, async (req, res) => {
         message: "Transfer successful"
     });
 });
-
-
 
 
 

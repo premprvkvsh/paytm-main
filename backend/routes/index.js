@@ -1,14 +1,9 @@
-// backend/api/index.js
+// backend/user/index.js
 const express = require('express');
 const userRouter = require("./user");
-const accountRouter = require("./account")
+const accountRouter = require("./account");
 
 const router = express.Router();
-
-
-router.get("/ping", (req, res) => {
-    res.send("pong");
-})
 
 router.use("/user", userRouter);
 router.use("/account", accountRouter);
