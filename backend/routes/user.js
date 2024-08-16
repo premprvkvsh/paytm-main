@@ -1,5 +1,5 @@
 // backend/routes/user.js
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
 const zod = require("zod");
@@ -15,6 +15,9 @@ const {
     authMiddleware
 } = require("../middleware");
 
+
+
+
 const signupBody = zod.object({
     username: zod.string().email(),
     firstName: zod.string(),
@@ -23,23 +26,29 @@ const signupBody = zod.object({
 })
 
 router.post("/signup", async (req, res) => {
+    console.log("Request Body:", req.body);
+
     const {
-        success
-    } = signupBody.safeParse(req.body)
+        success,
+        error
+    } = signupBody.safeParse(req.body);
+    console.log("Validation Success:", success);
     if (!success) {
+        console.log("Validation Error:", error);
         return res.status(411).json({
             message: "Email already taken / Incorrect inputs"
-        })
+        });
     }
 
     const existingUser = await User.findOne({
         username: req.body.username
-    })
+    });
+    console.log("Existing User:", existingUser);
 
     if (existingUser) {
         return res.status(411).json({
             message: "Email already taken/Incorrect inputs"
-        })
+        });
     }
 
     const user = await User.create({
